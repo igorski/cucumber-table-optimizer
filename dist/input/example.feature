@@ -1,4 +1,4 @@
-Feature: Example Cucumber feture file
+Feature: Example Cucumber feature file
 
   @tag1 @tag2
 
@@ -12,6 +12,7 @@ Feature: Example Cucumber feture file
       | property1 | property2 |
       | foo       | bar       |
       | bar       | baz       |
+      | baz       | qux       |
       | qux       | quux      |
       | quux      | quuz      |
       | quuz      | corge     |

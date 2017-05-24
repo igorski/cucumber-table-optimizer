@@ -23,20 +23,38 @@
  */
 package nl.igorski.cto;
 
-public class Main
+import nl.igorski.cto.utils.*;
+import java.io.File;
+
+public final class Main
 {
     public static void main( String[] args )
     {
         // process command line arguments
 
         if ( args == null || args.length < 2 ) {
-            System.out.println( "no arguments supplied for input and output folders" );
+            System.out.println( "expected both input and output folders to be specified." );
             System.exit( -1 );
         }
 
         final String input  = args[0];
         final String output = args[1];
 
-        System.out.println( "optimizing Cucumber files in " + input + " into " + output );
+        // grab input directory and check its existance
+
+        final File inputDirectory = new File( input );
+        if ( !inputDirectory.exists() || !inputDirectory.isDirectory()) {
+            System.out.println( "directory '" + input + "' does not exist." );
+            System.exit( -1 );
+        }
+
+        // create output directory (and recursively create its parent folders)
+
+        final File outputDirectory = new File( output );
+        FileUtil.createFoldersForPath( output );
+
+        System.out.println( "optimizing Cucumber files in '" + input + "' into '" + output + "'" );
+
+        CucumberProcessor.walk( inputDirectory, outputDirectory );
     }
 }
