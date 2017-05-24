@@ -42,3 +42,10 @@ Cucumber .feature files and _{OUTPUT_FOLDER}_ the relative/absolute
 path to the desired output folder, e.g.:
 
     java -jar cto.jar ~/Documents/Tests ./Temp/OptimizedTests
+
+You can test CTO by running the following in the repository's root:
+
+    java -jar ./dist/cto.jar ./dist/input ./dist/output
+
+Where you can find the optimized Cucumber files in the _./dist/output_-folder.
+
