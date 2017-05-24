@@ -39,15 +39,20 @@ public final class CucumberProcessor
 
     /* private methods */
 
-    private static void recursiveRead( File input, File output ) {
+    private static void recursiveRead( File input, File outputRoot ) {
+        recursiveRead( input, outputRoot, "" );
+    }
+
+    private static void recursiveRead( File input, File outputRoot, String subDir ) {
 
         for ( File file : input.listFiles()) {
             if ( file.isFile() && isCucumberFile( file )) {
-                System.out.println( "Processing Cucumber file:" + file.getName() );
-                processFile( file, output );
+                System.out.println( "Processing Cucumber file: " + subDir + file.getName() );
+                processFile( file, outputRoot.getAbsolutePath() + subDir );
             }
             else if ( file.isDirectory()) {
-                recursiveRead( file, output );
+                final String subDirectory = ( subDir.length() == 0 ) ? file.separator : subDir;
+                recursiveRead( file, outputRoot, subDirectory + file.separator + file.getName() );
             }
         }
     }
@@ -63,7 +68,7 @@ public final class CucumberProcessor
         return ( extension.equals( "feature" ));
     }
 
-    private static void processFile( File cucumberFile, File output ) {
+    private static void processFile( File cucumberFile, String outputFolder ) {
 
         // read the Files contents line by line
 
@@ -104,8 +109,9 @@ public final class CucumberProcessor
                     ++rowNumber;
 
                     FileUtil.generateFile(
-                        cucumberFile.getName().replace( ".feature", rowNumber + ".feature" ),
-                        data, output
+                        // file will have a number indicating which row is being described
+                        cucumberFile.getName().replace( ".feature", "_" + rowNumber + ".feature" ),
+                        data, outputFolder
                     );
                 }
             }

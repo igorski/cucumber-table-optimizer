@@ -53,11 +53,11 @@ public final class FileUtil
         }
     }
 
-    public static void generateFile( String fileName, ArrayList<String> data,  File output ) {
+    public static void generateFile( String fileName, ArrayList<String> data,  String outputFolder ) {
 
         try {
-            Path outputFile = Paths.get( output + File.separator + fileName );
-            FileUtil.createFoldersForPath( outputFile.toAbsolutePath().toString() );
+            Path outputFile = Paths.get( outputFolder + File.separator + fileName );
+            createFoldersForPath( outputFile.toAbsolutePath().toString() );
             Files.write( outputFile, data, Charset.forName( "UTF-8" ));
         }
         catch ( IOException e ) {
