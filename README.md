@@ -14,14 +14,14 @@ reduced running time.
 Ideally you don't write your tests around CTO, but write the Cucumber
 tests as you ideally would, namely:
  
-* worry about defining the steps for the feature at hand
+* worry only about defining the steps for the feature at hand
 * define a table for all different environment properties the steps
- should be tested in
- 
-That's it! CTO should be executed as a step prior to running your tests
+ should be tested in...
+
+... and that's it! CTO should be executed as a step prior to running your tests
 by passing your test source folder and having the CTO-optimized output
 be written into a temporary output folder. From this folder the .feature
-files should be compiled during test execution.
+files should be compiled during your test suites execution.
 
 How to build
 ------------

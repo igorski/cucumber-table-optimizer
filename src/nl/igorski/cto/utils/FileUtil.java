@@ -34,11 +34,25 @@ import java.util.List;
 
 public final class FileUtil
 {
+    /**
+     * create all directories in specified path if they
+     * didn't exist yet
+     *
+     * @param path
+     * @return
+     */
     public static boolean createFoldersForPath( String path ) {
         final File file = new File( path );
         return file.getParentFile().mkdirs();
     }
 
+    /**
+     * retrieve the text contents of given file as an Array
+     * of Strings (one entry per line)
+     *
+     * @param file
+     * @return
+     */
     public static String[] getFileContentsAsArray( File file ) {
 
         try {
@@ -53,15 +67,57 @@ public final class FileUtil
         }
     }
 
-    public static void generateFile( String fileName, ArrayList<String> data,  String outputFolder ) {
+    /**
+     * write the contents of given data (list of lines) under given fileName
+     * in given outputFolder
+     *
+     * @param fileName
+     * @param data
+     * @param outputFolder
+     */
+    public static boolean writeFile( String fileName, ArrayList<String> data, String outputFolder ) {
 
         try {
             Path outputFile = Paths.get( outputFolder + File.separator + fileName );
             createFoldersForPath( outputFile.toAbsolutePath().toString() );
             Files.write( outputFile, data, Charset.forName( "UTF-8" ));
+            return true;
         }
         catch ( IOException e ) {
             e.printStackTrace();
+            return false;
         }
+    }
+
+    public static boolean copyFile( File inputFile, String outputFolder ) {
+        Path outputFile = Paths.get( outputFolder + File.separator + inputFile.getName() );
+        createFoldersForPath( outputFile.toAbsolutePath().toString() );
+        try {
+            Files.copy( inputFile.toPath(), outputFile );
+            return true;
+        }
+        catch( IOException e ) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * verifies whether given File is a Cucumber .feature file
+     *
+     * @param file
+     * @return
+     */
+    public static boolean isCucumberFile( File file ) {
+
+        // not very exciting, we merely check the extension
+
+        String extension = "";
+        try {
+            final String name = file.getName();
+            extension = name.substring( name.lastIndexOf( "." ) + 1 );
+        }
+        catch ( Exception e ) {}
+        return ( extension.equals( "feature" ));
     }
 }

@@ -46,7 +46,7 @@ public final class CucumberProcessor
     private static void recursiveRead( File input, File outputRoot, String subDir ) {
 
         for ( File file : input.listFiles()) {
-            if ( file.isFile() && isCucumberFile( file )) {
+            if ( file.isFile() && FileUtil.isCucumberFile( file )) {
                 System.out.println( "Processing Cucumber file: " + subDir + file.getName() );
                 processFile( file, outputRoot.getAbsolutePath() + subDir );
             }
@@ -55,17 +55,6 @@ public final class CucumberProcessor
                 recursiveRead( file, outputRoot, subDirectory + file.separator + file.getName() );
             }
         }
-    }
-
-    private static boolean isCucumberFile( File file ) {
-
-        String extension = "";
-        try {
-            final String name = file.getName();
-            extension = name.substring( name.lastIndexOf( "." ) + 1 );
-        }
-        catch ( Exception e ) {}
-        return ( extension.equals( "feature" ));
     }
 
     private static void processFile( File cucumberFile, String outputFolder ) {
@@ -79,6 +68,7 @@ public final class CucumberProcessor
         ArrayList<String> scenario = new ArrayList<String>();
         boolean foundTable = false;
         int rowNumber = 0;
+
         for ( int lineNumber = 0; lineNumber < lines.length; ++lineNumber ) {
 
             final String line = lines[ lineNumber ];
@@ -108,7 +98,7 @@ public final class CucumberProcessor
 
                     ++rowNumber;
 
-                    FileUtil.generateFile(
+                    FileUtil.writeFile(
                         // file will have a number indicating which row is being described
                         cucumberFile.getName().replace( ".feature", "_" + rowNumber + ".feature" ),
                         data, outputFolder
@@ -116,6 +106,9 @@ public final class CucumberProcessor
                 }
             }
         }
+
+        if ( !foundTable )
+            FileUtil.copyFile( cucumberFile, outputFolder );
     }
 
     private static boolean isTableDefinition( String line ) {
