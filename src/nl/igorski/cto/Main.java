@@ -28,6 +28,11 @@ import java.io.File;
 
 public final class Main
 {
+    /**
+     * @param args expects 2 command line argumentsm the first is the input directory
+     *        to recursively traverse for Cucumber files, the second is the output directory
+     *        in which to write the transformed Cucumber files
+     */
     public static void main( String[] args )
     {
         // process command line arguments

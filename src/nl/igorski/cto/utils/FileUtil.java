@@ -89,6 +89,13 @@ public final class FileUtil
         }
     }
 
+    /**
+     * copy given inputFile into given outputFolder
+     *
+     * @param inputFile
+     * @param outputFolder
+     * @return
+     */
     public static boolean copyFile( File inputFile, String outputFolder ) {
         Path outputFile = Paths.get( outputFolder + File.separator + inputFile.getName() );
         createFoldersForPath( outputFile.toAbsolutePath().toString() );

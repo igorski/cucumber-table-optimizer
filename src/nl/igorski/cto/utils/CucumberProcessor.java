@@ -32,17 +32,34 @@ public final class CucumberProcessor
 {
     private static String TABLE_DEFINITION = "^.*(Examples:).*$";
 
-    public static void walk( File input, File output ) {
+    /**
+     * recursively walk through all directories of given inputDir, processing
+     * all Cucumber .feature files inside and splitting them into separate
+     * files per table row (if the file uses tables)
+     *
+     * @param inputDir the directory containing all Cucumber files, will be traversed recursively
+     * @param outputDir the output directory in which to write the transformed Cucumber files
+     */
+    public static void walk( File inputDir, File outputDir ) {
 
-        recursiveRead( input, output );
+        recursiveRead( inputDir, outputDir );
     }
 
     /* private methods */
 
+    /**
+     * @param input the directory containing all Cucumber files, will be traversed recursively
+     * @param outputRoot the output directory in which to write the transformed Cucumber files
+     */
     private static void recursiveRead( File input, File outputRoot ) {
         recursiveRead( input, outputRoot, "" );
     }
 
+    /**
+     * @param input the directory containing all Cucumber files, will be traversed recursively
+     * @param outputRoot the output directory in which to write the transformed Cucumber files
+     * @param subDir subdirectory of outputRoot in which to write the transformed Cucumber files
+     */
     private static void recursiveRead( File input, File outputRoot, String subDir ) {
 
         for ( File file : input.listFiles()) {
@@ -57,6 +74,10 @@ public final class CucumberProcessor
         }
     }
 
+    /**
+     * @param cucumberFile the Cucumber file to process
+     * @param outputFolder  the output directory in which to write the transformed Cucumber files
+     */
     private static void processFile( File cucumberFile, String outputFolder ) {
 
         // read the Files contents line by line
@@ -111,10 +132,24 @@ public final class CucumberProcessor
             FileUtil.copyFile( cucumberFile, outputFolder );
     }
 
+    /**
+     * check whether given string contains a definition
+     * for a Cucumber table
+     *
+     * @param line
+     * @return
+     */
     private static boolean isTableDefinition( String line ) {
         return line.matches( TABLE_DEFINITION );
     }
 
+    /**
+     * check whether given string describes a row
+     * in a Cucumber table
+     *
+     * @param line
+     * @return
+     */
     private static boolean isTableRow( String line ) {
         return line.contains( "|" );
     }
