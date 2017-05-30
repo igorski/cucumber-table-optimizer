@@ -111,27 +111,30 @@ public final class CucumberProcessor
             }
             else {
 
-                // new table found ?
-                if ( isTableDefinition( line )) {
-                    ++lineNumber;
-                }
-                // read line by line and generate files for each line
-                else if ( isTableRow( line )) {
+                if ( !isCommented( line )) {
 
-                    // clone the scenario data and add the row data
-                    ArrayList<String> data = ( ArrayList<String> ) scenario.clone();
-                    data.add( line );
+                    // new table found ?
+                    if ( isTableDefinition( line )) {
+                        ++lineNumber;
+                    }
+                    // read line by line and generate files for each line
+                    else if ( isTableRow( line )) {
 
-                    ++writtenFiles;
+                        // clone the scenario data and add the row data
+                        ArrayList<String> data = ( ArrayList<String> ) scenario.clone();
+                        data.add(line);
 
-                    FileUtil.writeFile(
-                        // file will have a number indicating which row is being described
-                        cucumberFile.getName().replace( ".feature", "_" + writtenFiles + ".feature" ),
-                        data, outputFolder
-                    );
-                }
-                else if ( isTag( line )) {
-                    replaceTag( scenario, line );
+                        ++writtenFiles;
+
+                        FileUtil.writeFile(
+                            // file will have a number indicating which row is being described
+                            cucumberFile.getName().replace( ".feature", "_" + writtenFiles + ".feature" ),
+                            data, outputFolder
+                        );
+                    }
+                    else if (isTag( line )) {
+                        replaceTag( scenario, line );
+                    }
                 }
             }
         }
@@ -186,5 +189,20 @@ public final class CucumberProcessor
                 return;
             }
         }
+    }
+
+    /**
+     * check whether this line is commented out
+     *
+     * @param line
+     * @return
+     */
+    private static boolean isCommented( String line ) {
+        final String trimmed = line.trim();
+
+        if ( trimmed.length() > 0 )
+            return trimmed.substring( 0, 1 ).equals( "#" );
+
+        return false;
     }
 }

@@ -17,3 +17,4 @@ Feature: Example Cucumber feature file
       | property1 | property2 |
       | baz       | qux       |
       | qux       | quux      |
+      #| quuz      | quuz      |
