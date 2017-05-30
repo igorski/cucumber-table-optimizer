@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,7 @@ public final class FileUtil
         Path outputFile = Paths.get( outputFolder + File.separator + inputFile.getName() );
         createFoldersForPath( outputFile.toAbsolutePath().toString() );
         try {
-            Files.copy( inputFile.toPath(), outputFile );
+            Files.copy( inputFile.toPath(), outputFile, StandardCopyOption.REPLACE_EXISTING );
             return true;
         }
         catch( IOException e ) {

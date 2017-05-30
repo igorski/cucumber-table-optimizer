@@ -31,6 +31,7 @@ import java.util.List;
 public final class CucumberProcessor
 {
     private static String TABLE_DEFINITION = "^.*(Examples:).*$";
+    private static String EMAIL_DEFINITION = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$";
 
     /**
      * recursively walk through all directories of given inputDir, processing
@@ -89,6 +90,7 @@ public final class CucumberProcessor
         ArrayList<String> scenario = new ArrayList<String>();
         boolean foundTable = false;
         int rowNumber = 0;
+        int writtenFiles = 0;
 
         for ( int lineNumber = 0; lineNumber < lines.length; ++lineNumber ) {
 
@@ -109,21 +111,27 @@ public final class CucumberProcessor
             }
             else {
 
-                // table definition found, read line by line and generate files for each line
-
-                if ( isTableRow( line )) {
+                // new table found ?
+                if ( isTableDefinition( line )) {
+                    ++lineNumber;
+                }
+                // read line by line and generate files for each line
+                else if ( isTableRow( line )) {
 
                     // clone the scenario data and add the row data
                     ArrayList<String> data = ( ArrayList<String> ) scenario.clone();
                     data.add( line );
 
-                    ++rowNumber;
+                    ++writtenFiles;
 
                     FileUtil.writeFile(
                         // file will have a number indicating which row is being described
-                        cucumberFile.getName().replace( ".feature", "_" + rowNumber + ".feature" ),
+                        cucumberFile.getName().replace( ".feature", "_" + writtenFiles + ".feature" ),
                         data, outputFolder
                     );
+                }
+                else if ( isTag( line )) {
+                    replaceTag( scenario, line );
                 }
             }
         }
@@ -152,5 +160,31 @@ public final class CucumberProcessor
      */
     private static boolean isTableRow( String line ) {
         return line.contains( "|" );
+    }
+
+    /**
+     * check whether given string describes a Cucumber tag
+     * (note we ignore e-mail addresses ;))
+     *
+     * @return
+     */
+    private static boolean isTag( String line ) {
+        return line.contains( "@" ) && !line.matches( EMAIL_DEFINITION );
+    }
+
+    /**
+     * replace the line that contains a tag definition with
+     * given tag
+     *
+     * @param lines
+     * @param tag
+     */
+    private static void replaceTag( ArrayList<String> lines, String tag ) {
+        for ( int i = 0; i < lines.size(); ++i ) {
+            if ( isTag( lines.get( i ))) {
+                lines.set( i, tag );
+                return;
+            }
+        }
     }
 }
