@@ -14,6 +14,7 @@ Feature: Example Cucumber feature file
 
   @tag3
     Examples:
+
       | property1 | property2 |
       | baz       | qux       |
       | qux       | quux      |

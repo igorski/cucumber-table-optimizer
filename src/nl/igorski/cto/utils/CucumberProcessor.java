@@ -104,9 +104,12 @@ public final class CucumberProcessor
 
                 if ( !foundTable && isTableDefinition( line )) {
                     foundTable = true;
+
+                    // skip the table header line and go straight into the rows
+                    lineNumber = findNextLineWithContent( lineNumber, lines );
+
                     // add the next line into the scenario Array (defines table header and column names)
-                    scenario.add( lines[ lineNumber + 1 ]);
-                    ++lineNumber; // skip the table header line and go straight into the rows
+                    scenario.add( lines[ lineNumber ]);
                 }
             }
             else {
@@ -115,7 +118,7 @@ public final class CucumberProcessor
 
                     // new table found ?
                     if ( isTableDefinition( line )) {
-                        ++lineNumber;
+                        lineNumber = findNextLineWithContent( lineNumber, lines );
                     }
                     // read line by line and generate files for each line
                     else if ( isTableRow( line )) {
@@ -141,6 +144,16 @@ public final class CucumberProcessor
 
         if ( !foundTable )
             FileUtil.copyFile( cucumberFile, outputFolder );
+    }
+
+    private static int findNextLineWithContent( int currentLineNumber, String[] lines ) {
+        String content = "";
+        final int maxLineNumber = lines.length - 1;
+        while ( content.trim().length() == 0 && currentLineNumber < maxLineNumber ) {
+            ++currentLineNumber;
+            content = lines[ currentLineNumber ];
+        }
+        return currentLineNumber;
     }
 
     /**
